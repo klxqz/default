@@ -179,32 +179,14 @@ $(document).ready(function () {
                     params.push(fields[i].name + '=' + fields[i].value);
                 }
             }
-            
-            /*Используется адрес из формы фильтров*/
-            var url = f.attr('action') + '?' + params.join('&');
-            
+            var url = '?' + params.join('&');
             $(window).lazyLoad && $(window).lazyLoad('sleep');
             $('#product-list').html('<img src="' + f.data('loading') + '">');
-            
-            /*Добавление дополнительных переменных textStatus, jqXHR*/
-            $.get(url+'&_=_', function(html, textStatus, jqXHR) {
+            $.get(url+'&_=_', function(html) {
                 var tmp = $('<div></div>').html(html);
-                
-                /*Обновление названия категории*/
-                $('h1.category-name').html(tmp.find('h1.category-name').html());
-                
-                /*Обновление описания категории*/
-                $('.category-description').html(tmp.find('.category-description').html());
-                
-                /*Обновление заголовка странице, который выводится на вкладке браузера*/
-                $('title').text(tmp.find('[name=filter-plugin-meta-title]').val()); 
-                
                 $('#product-list').html(tmp.find('#product-list').html());
                 if (!!(history.pushState && history.state !== undefined)) {
-                    
-                    /*Установка текущего адреса страницы в строке браузера*/
-                    window.history.pushState({}, '', jqXHR.getResponseHeader('X-Current-Url'));
-                    
+                    window.history.pushState({}, '', url);
                 }
                 $(window).lazyLoad && $(window).lazyLoad('reload');
             });
